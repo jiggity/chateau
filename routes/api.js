@@ -12,7 +12,10 @@ module.exports = function(config) {
         r.connect({
             host: config.host,
             port: config.port,
-            authKey: config.authKey
+            authKey: config.authKey,
+            ssl: {
+                rejectUnauthorized: false
+            }
         }, function(error, conn) {
             // Throws, if we don't have a connection, we won't do anything...
             if (error) throw error
@@ -57,7 +60,7 @@ module.exports = function(config) {
                 if (error) handleError(error);
                 res.json({
                     error: error,
-                    dbs:dbs 
+                    dbs:dbs
                 });
             })
         }
@@ -76,7 +79,7 @@ module.exports = function(config) {
             if (error) handleError(error);
             res.json({
                 error: error,
-                dbs: dbs 
+                dbs: dbs
             });
         })
     }
@@ -276,7 +279,7 @@ module.exports = function(config) {
                                 break;
                             }
                         }
-                        
+
                         // Sort keys by occurence
                         sort_keys(keys);
 
@@ -285,7 +288,7 @@ module.exports = function(config) {
 
                         // Flatten types (used when the user wants to create a new document
                         var flattenedTypes = flattenTypes(flattenedKeys, keys);
-                        
+
                         // Nested fields
                         var nestedFields = nestedKeys(keys);
                         nestedFields[0].isPrimaryKey = true // The first key is alweays the primary key
@@ -341,7 +344,7 @@ module.exports = function(config) {
 
 
 
-       
+
         r.db(db).table(table).run( connection, {timeFormat: 'raw'}, function(error, cursor) {
             if (error) {
                 handleError(error);
@@ -541,7 +544,7 @@ module.exports = function(config) {
                         ref = ref[field[i]];
                     }
                 }
-                       
+
                 return doc.merge().without(fieldObject)
             }).run( connection, {timeFormat: 'raw'}, function(error, result) {
                 if (error) handleError(error);
@@ -748,7 +751,7 @@ module.exports = function(config) {
         //TODO Add the empty string type
         if (value === undefined) {
             return 'undefined'
-        } else if (value === null) { 
+        } else if (value === null) {
             return 'null'
         } else if (typeof value === 'boolean') {
             return 'boolean'
@@ -792,7 +795,7 @@ module.exports = function(config) {
                 keys['occurrenceRebalanced'] = occurrence
             }
             else {
-                keys['occurrenceRebalanced'] = keys.object_count 
+                keys['occurrenceRebalanced'] = keys.object_count
             }
 
         }
@@ -811,7 +814,7 @@ module.exports = function(config) {
             }
         }
 
-       
+
         var max = -1
         var mostFrequentType = null
 
@@ -936,7 +939,7 @@ module.exports = function(config) {
             for(var k=0; k<flattenedKeys[j].length;k++) {
                 value = value.keys[flattenedKeys[j][k]];
             }
-            types.push(value.most_frequent_type); 
+            types.push(value.most_frequent_type);
         }
         return types;
     }
